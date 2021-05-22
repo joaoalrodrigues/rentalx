@@ -1,0 +1,23 @@
+import { Request, Response } from "express";
+import { container } from "tsyringe";
+import { CreateCategoryService } from "./CreateCategoryService";
+
+
+class CreateCategoryController {
+
+    async handle(request: Request, response: Response): Promise<Response> {
+        const { name, description } = request.body;
+
+        const createCategoryService = container.resolve(CreateCategoryService);
+
+        return createCategoryService.execute(name, description)
+            .then(() => {
+                return response.status(201).send();
+            })
+            .catch(err => {
+                return response.status(400).json({ error: err.message });
+            });
+    }
+}
+
+export { CreateCategoryController }
