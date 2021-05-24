@@ -10,9 +10,9 @@ class CreateSpecificationController {
 
         const createSpecificationService = container.resolve(CreateSpecificationService);
 
-        return createSpecificationService.execute(name, description)
-            .then(() => response.status(201).send())
-            .catch(err => response.status(400).json({ error: err.message }));
+        await createSpecificationService.execute(name, description)
+        
+        return response.status(201).send();
     }
 
 }

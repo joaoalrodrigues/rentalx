@@ -17,6 +17,16 @@ class ImportCategoriesService {
         private categoriesRepository: ICategoriesRepository
     ) { }
 
+    async execute(file: Express.Multer.File): Promise<void> {
+        const categories = await this.loadCategories(file);
+        const createCategoryService = new CreateCategoryService(this.categoriesRepository);
+
+        categories.forEach(category => {
+            const { name, description } = category;
+            createCategoryService.execute(name, description);
+        });
+    }
+
     loadCategories(file: Express.Multer.File): Promise<IImportCategory[]> {
         return new Promise((resolve, reject) => {
             const stream = fs.createReadStream(file.path);
@@ -25,7 +35,7 @@ class ImportCategoriesService {
 
             stream.pipe(parseFile);
 
-            parseFile.on("data", async (row) => {
+            parseFile.on("data", async (row: string[]) => {
                 const [name, description] = row;
                 categories.push({
                     name,
@@ -39,16 +49,6 @@ class ImportCategoriesService {
                 .on("error", (err) => {
                     reject(err);
                 });
-        });
-    }
-
-    async execute(file: Express.Multer.File): Promise<void> {
-        const categories = await this.loadCategories(file);
-        const createCategoryService = new CreateCategoryService(this.categoriesRepository);
-
-        categories.forEach(category => {
-            const { name, description } = category;
-            createCategoryService.execute(name, description);
         });
     }
 

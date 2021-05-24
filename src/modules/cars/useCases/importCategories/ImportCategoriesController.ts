@@ -9,10 +9,9 @@ class ImportCategoriesController {
 
         const importCategoriesService = container.resolve(ImportCategoriesService);
 
-        return importCategoriesService.execute(file)
-            .then(() => {
-                return response.status(201).send();
-            });
+        await importCategoriesService.execute(file);
+
+        return response.status(201).send();
     }
 
 }

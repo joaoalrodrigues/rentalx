@@ -10,13 +10,9 @@ class CreateCategoryController {
 
         const createCategoryService = container.resolve(CreateCategoryService);
 
-        return createCategoryService.execute(name, description)
-            .then(() => {
-                return response.status(201).send();
-            })
-            .catch(err => {
-                return response.status(400).json({ error: err.message });
-            });
+        await createCategoryService.execute(name, description)
+
+        return response.status(201).send();
     }
 }
 
