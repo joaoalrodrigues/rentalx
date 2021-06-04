@@ -26,12 +26,13 @@ describe("Create Category", () => {
     });
 
     it("should not be able to create a new category with existent name", async () => {
-        expect(async () => {
+        await expect(async () => {
             const category = {
                 name: "Category Test",
                 description: "Category Description Test"
             }
 
+            await createCategoryService.execute(category.name, category.description);
             await createCategoryService.execute(category.name, category.description);
         }).rejects.toBeInstanceOf(AppError);
     });

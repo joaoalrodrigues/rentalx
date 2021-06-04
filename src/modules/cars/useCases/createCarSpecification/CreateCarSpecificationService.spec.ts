@@ -51,7 +51,7 @@ describe("Create Car Specification", () => {
     })
 
     it("should not be able to add specifications to an unexistent car", async () => {
-        expect(async () => {
+        await expect(async () => {
             const car_id = "1234";
             const specifications_id = ["1111"]
             await createCarSpecificationService.execute({ car_id, specifications_id });
@@ -59,7 +59,7 @@ describe("Create Car Specification", () => {
     })
 
     it("should not be able to add an unexistent specifications to a car", async () => {
-        expect(async () => {
+        await expect(async () => {
             const car = await createCarService.execute({
                 name: "Car Name",
                 brand: "Brand",

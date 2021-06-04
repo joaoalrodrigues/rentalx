@@ -29,7 +29,7 @@ class CreateCarSpecificationService {
 
         let specifications = await this.specificationsRepository.findByIds(specifications_id)
 
-        if (!specifications) {
+        if (specifications.length === 0) {
             throw new AppError("Specification does not exist.");
         }
 
@@ -39,7 +39,7 @@ class CreateCarSpecificationService {
             specifications = specifications.filter(specification => !carExists.specifications.includes(specification));
             carExists.specifications.push(...specifications);
         }
-        
+
         await this.carsRepository.create(carExists);
 
         return carExists;

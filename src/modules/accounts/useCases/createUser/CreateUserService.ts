@@ -3,6 +3,7 @@ import { hash } from "bcryptjs";
 import { IUsersRepository } from "@modules/accounts/repositories/IUsersRepository";
 import { ICreateUserDTO } from "@modules/accounts/dtos/ICreateUserDTO";
 import { AppError } from "@shared/errors/appError";
+import { User } from "@modules/accounts/infra/typeorm/entities/User";
 
 @injectable()
 class CreateUserService {
@@ -12,7 +13,7 @@ class CreateUserService {
         private usersRepository: IUsersRepository
     ) { }
 
-    async execute({ name, email, password, driver_license }: ICreateUserDTO): Promise<void> {
+    async execute({ name, email, password, driver_license }: ICreateUserDTO): Promise<User> {
         const userAlreadyExists = await this.usersRepository.findByEmail(email);
 
         if (userAlreadyExists) {
@@ -20,12 +21,14 @@ class CreateUserService {
         }
 
         const passwordHash = await hash(password, 8);
-        await this.usersRepository.create({
+        const user = await this.usersRepository.create({
             name,
             email,
             password: passwordHash,
             driver_license
         });
+
+        return user;
     }
 }
 

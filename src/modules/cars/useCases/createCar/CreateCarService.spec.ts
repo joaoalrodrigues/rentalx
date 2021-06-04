@@ -27,8 +27,8 @@ describe("Create Car", () => {
         expect(car).toHaveProperty("id");
     });
 
-    it("should not be able to create a car with existent license plate", () => {
-        expect(async () => {
+    it("should not be able to create a car with existent license plate", async () => {
+        await expect(async () => {
             const car = {
                 name: "Name Car",
                 description: "Description Car",
