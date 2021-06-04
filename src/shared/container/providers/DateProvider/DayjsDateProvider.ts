@@ -1,19 +1,24 @@
 // import dayjs from "dayjs";
 
-// class DayjsDateProvider implements IDateProvider {
+import { AppError } from "@shared/errors/appError"
 
-//     now(): Date {
-//         return dayjs().toDate();
-//     }
+class DayjsDateProvider implements IDateProvider {
 
-//     compareHours(start_date: Date, end_date: Date): number {
-//         return dayjs(end_date).diff(start_date, "hours");
-//     }
+    now(): Date {
+        throw new AppError("Method not implemented");
+        // return dayjs().toDate();
+    }
 
-//     convertToUTC(date: Date): string {
-//         return dayjs(date).utc().local().format();
-//     }
+    compareHours(start_date: Date, end_date: Date): number {
+        throw new AppError("Method not implemented");
+        // return dayjs(end_date).diff(start_date, "hours");
+    }
 
-// }
+    convertToUTC(date: Date): string {
+        throw new AppError("Method not implemented");
+        // return dayjs(date).utc().local().format();
+    }
 
-// export { DayjsDateProvider }
+}
+
+export { DayjsDateProvider }
