@@ -28,8 +28,9 @@ describe("Create Rental", () => {
     });
 
     it("should be able to create a rental", async () => {
-        const rental = await createRentalWithSuccess();
+        const { rental, car } = await createRentalWithSuccess();
         expect(rental).toHaveProperty("id");
+        expect(car.available).toBe(false);
     });
 
     it("should not be able to create a rental for an unexistent user", async () => {
@@ -73,7 +74,7 @@ describe("Create Rental", () => {
 
     it("should not be able to create a rental for a user with a rental in course", async () => {
         await expect(async () => {
-            const rental = await createRentalWithSuccess();
+            const { rental } = await createRentalWithSuccess();
 
             const car = await createCarService.execute({
                 name: "Car Rental 2",
@@ -96,7 +97,7 @@ describe("Create Rental", () => {
 
     it("should not be able to create a rental for a car currently rented", async () => {
         await expect(async () => {
-            const rental = await createRentalWithSuccess();
+            const { rental } = await createRentalWithSuccess();
 
             const user = await createUserService.execute({
                 name: "User Rental 2",
@@ -162,12 +163,14 @@ async function createRentalWithSuccess() {
         fine_amount: 50
     });
 
+    const startDate = new Date();
+
     const rental = await createRentalService.execute({
         car_id: car.id,
         user_id: user.id,
-        start_date: new Date(),
-        expected_return_date: new Date("2021-06-08")
+        start_date: startDate,
+        expected_return_date: new Date(startDate.getDate() + 2)
     });
 
-    return rental;
+    return { rental, car };
 }

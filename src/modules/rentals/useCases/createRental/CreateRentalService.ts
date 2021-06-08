@@ -36,6 +36,8 @@ class CreateRentalService {
             expected_return_date
         });
 
+        this.carsRepository.updateAvailability(car_id, false);
+
         return rental;
     }
 
@@ -53,7 +55,7 @@ class CreateRentalService {
         }
     }
 
-    private async checkIsCarValid(car_id: string) {
+    private async checkIsCarValid(car_id: string): Promise<void> {
         const carExists = await this.carsRepository.findById(car_id);
 
         if (!carExists) {

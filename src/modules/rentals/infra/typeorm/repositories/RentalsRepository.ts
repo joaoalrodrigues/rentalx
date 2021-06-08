@@ -10,22 +10,42 @@ class RentalsRepository implements IRentalsRepository {
         this.repository = getRepository(Rental);
     }
 
+    async findById(id: string): Promise<Rental> {
+        const rental = await this.repository.findOne(id);
+        return rental;
+    }
+
     async findActiveByCar(car_id: string): Promise<Rental> {
-        const activeRental = await this.repository.findOne({ car_id, end_date: null });
+        const activeRental = await this.repository.findOne({
+            where: {
+                car_id,
+                end_date: null
+            }
+        });
+
         return activeRental;
     }
 
     async findActiveByUser(user_id: string): Promise<Rental> {
-        const activeRental = await this.repository.findOne({ user_id, end_date: null });
+        const activeRental = await this.repository.findOne({
+            where: {
+                user_id,
+                end_date: null
+            }
+        });
+
         return activeRental;
     }
 
-    async create({ car_id, user_id, start_date, expected_return_date }: IRentalDTO): Promise<Rental> {
+    async create({ car_id, user_id, start_date, expected_return_date, end_date, total, id }: IRentalDTO): Promise<Rental> {
         const rental = this.repository.create({
             user_id,
             car_id,
             start_date,
-            expected_return_date
+            expected_return_date,
+            end_date,
+            total,
+            id
         });
 
         await this.repository.save(rental);

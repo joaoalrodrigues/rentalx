@@ -1,24 +1,40 @@
-// import dayjs from "dayjs";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 
-import { AppError } from "@shared/errors/appError"
 
 class DayjsDateProvider implements IDateProvider {
 
     now(): Date {
-        throw new AppError("Method not implemented");
-        // return dayjs().toDate();
+        return dayjs().toDate();
     }
 
     compareHours(start_date: Date, end_date: Date): number {
-        throw new AppError("Method not implemented");
-        // return dayjs(end_date).diff(start_date, "hours");
+        const end_date_utc = this.convertToUTC(end_date);
+        const start_date_utc = this.convertToUTC(start_date);
+
+        return dayjs(end_date_utc).diff(start_date_utc, "hours");
+    }
+
+    compareDays(start_date: Date, end_date: Date): number {
+        const end_date_utc = this.convertToUTC(end_date);
+        const start_date_utc = this.convertToUTC(start_date);
+
+        return dayjs(end_date_utc).diff(start_date_utc, "days");
     }
 
     convertToUTC(date: Date): string {
-        throw new AppError("Method not implemented");
-        // return dayjs(date).utc().local().format();
+        return dayjs(date).utc().local().format();
     }
 
 }
 
-export { DayjsDateProvider }
+enum TimeType {
+    SECONDS = "seconds",
+    MINUTES = "minutes",
+    HOURS = "hours",
+    DAYS = "days",
+    MONTHS = "months",
+    YEARS = "years"
+}
+
+export { DayjsDateProvider, TimeType }
