@@ -1,13 +1,14 @@
 import { ICarsRepository } from "@modules/cars/repositories/ICarsRepository";
 import { IRentalsRepository } from "@modules/rentals/repositories/IRentalsRepository";
 import { AppError } from "@shared/errors/appError";
-import { inject } from "tsyringe";
+import { inject, injectable } from "tsyringe";
 
 interface IRequest {
     id: string;
     user_id: string;
 }
 
+@injectable()
 class FinalizeRentalService {
 
     constructor(

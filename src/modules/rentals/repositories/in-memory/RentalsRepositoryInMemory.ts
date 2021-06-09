@@ -10,6 +10,11 @@ class RentalsRepositoryInMemory implements IRentalsRepository {
         return rental;
     }
 
+    async findByUser(user_id: string): Promise<Rental[]> {
+        const rentalsByUser = this.rentals.filter(rental => rental.user_id === user_id);
+        return rentalsByUser;
+    }
+
     async findActiveByCar(car_id: string): Promise<Rental> {
         return this.rentals.find(rental => rental.car_id === car_id && rental.end_date == null);
     }

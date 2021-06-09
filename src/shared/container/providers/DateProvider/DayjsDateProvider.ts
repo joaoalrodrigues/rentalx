@@ -1,7 +1,8 @@
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { injectable } from "tsyringe";
 
-
+@injectable()
 class DayjsDateProvider implements IDateProvider {
 
     now(): Date {
@@ -22,8 +23,20 @@ class DayjsDateProvider implements IDateProvider {
         return dayjs(end_date_utc).diff(start_date_utc, "days");
     }
 
+    isExpired(end_date: Date): boolean {
+        return dayjs(end_date).isBefore(this.now());
+    }
+
     convertToUTC(date: Date): string {
         return dayjs(date).utc().local().format();
+    }
+
+    addDays(days: number): Date {
+        return dayjs().add(days, "days").toDate();
+    }
+
+    addHours(hours: number): Date {
+        return dayjs().add(hours, "hours").toDate();
     }
 
 }

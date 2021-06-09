@@ -34,113 +34,111 @@ describe("Create Rental", () => {
     });
 
     it("should not be able to create a rental for an unexistent user", async () => {
-        await expect(async () => {
-            const car = await createCarService.execute({
-                name: "Car Rental",
-                description: "Car that will be rented",
-                brand: "Rental",
-                category_id: "category-id",
-                license_plate: "XFV-2354",
-                daily_rate: 70,
-                fine_amount: 50
-            });
-
-            await createRentalService.execute({
+        const car = await createCarService.execute({
+            name: "Car Rental",
+            description: "Car that will be rented",
+            brand: "Rental",
+            category_id: "category-id",
+            license_plate: "XFV-2354",
+            daily_rate: 70,
+            fine_amount: 50
+        });
+        
+        await expect(
+            createRentalService.execute({
                 car_id: car.id,
                 user_id: "user-unexistent",
                 start_date: new Date(),
                 expected_return_date: new Date("2021-06-08")
-            });
-        }).rejects.toBeInstanceOf(AppError);
+            })
+        ).rejects.toBeInstanceOf(AppError);
     });
 
     it("should not be able to create a rental for an unexistent car", async () => {
-        await expect(async () => {
-            const user = await createUserService.execute({
-                name: "User Rental",
-                email: "use@rental.com",
-                password: "rental123",
-                driver_license: "XXXXXXXX"
-            });
-
-            await createRentalService.execute({
+        const user = await createUserService.execute({
+            name: "User Rental",
+            email: "use@rental.com",
+            password: "rental123",
+            driver_license: "XXXXXXXX"
+        });
+        await expect(
+            createRentalService.execute({
                 car_id: "car-unexistent",
                 user_id: user.id,
                 start_date: new Date(),
                 expected_return_date: new Date("2021-06-08")
-            });
-        }).rejects.toBeInstanceOf(AppError);
+            })
+        ).rejects.toBeInstanceOf(AppError);
     });
 
     it("should not be able to create a rental for a user with a rental in course", async () => {
-        await expect(async () => {
-            const { rental } = await createRentalWithSuccess();
+        const { rental } = await createRentalWithSuccess();
 
-            const car = await createCarService.execute({
-                name: "Car Rental 2",
-                description: "Another car that will be rented",
-                brand: "Rental",
-                category_id: "category-id",
-                license_plate: "XFC-2354",
-                daily_rate: 170,
-                fine_amount: 100
-            });
+        const car = await createCarService.execute({
+            name: "Car Rental 2",
+            description: "Another car that will be rented",
+            brand: "Rental",
+            category_id: "category-id",
+            license_plate: "XFC-2354",
+            daily_rate: 170,
+            fine_amount: 100
+        });
 
-            await createRentalService.execute({
+        await expect(
+            createRentalService.execute({
                 car_id: car.id,
                 user_id: rental.user_id,
                 start_date: new Date(),
                 expected_return_date: new Date("2021-06-08")
-            });
-        }).rejects.toBeInstanceOf(AppError);
+            })
+        ).rejects.toBeInstanceOf(AppError);
     });
 
     it("should not be able to create a rental for a car currently rented", async () => {
-        await expect(async () => {
-            const { rental } = await createRentalWithSuccess();
+        const { rental } = await createRentalWithSuccess();
 
-            const user = await createUserService.execute({
-                name: "User Rental 2",
-                email: "user2@rental.com",
-                password: "rental123",
-                driver_license: "XXXXXXXX"
-            });
-
-            await createRentalService.execute({
+        const user = await createUserService.execute({
+            name: "User Rental 2",
+            email: "user2@rental.com",
+            password: "rental123",
+            driver_license: "XXXXXXXX"
+        });
+        await expect(
+            createRentalService.execute({
                 car_id: rental.car_id,
                 user_id: user.id,
                 start_date: new Date(),
                 expected_return_date: new Date("2021-06-08")
-            });
-        }).rejects.toBeInstanceOf(AppError);
+            })
+        ).rejects.toBeInstanceOf(AppError);
     });
 
     it("should not be able to create a rental for less than 24 hours", async () => {
-        await expect(async () => {
-            const user = await createUserService.execute({
-                name: "User Rental",
-                email: "use@rental.com",
-                password: "rental123",
-                driver_license: "XXXXXXXX"
-            });
+        const user = await createUserService.execute({
+            name: "User Rental",
+            email: "use@rental.com",
+            password: "rental123",
+            driver_license: "XXXXXXXX"
+        });
 
-            const car = await createCarService.execute({
-                name: "Car Rental",
-                description: "Car that will be rented",
-                brand: "Rental",
-                category_id: "category-id",
-                license_plate: "XFV-2354",
-                daily_rate: 70,
-                fine_amount: 50
-            });
+        const car = await createCarService.execute({
+            name: "Car Rental",
+            description: "Car that will be rented",
+            brand: "Rental",
+            category_id: "category-id",
+            license_plate: "XFV-2354",
+            daily_rate: 70,
+            fine_amount: 50
+        });
 
-            await createRentalService.execute({
+        await expect(
+            createRentalService.execute({
                 car_id: car.id,
                 user_id: user.id,
                 start_date: new Date(),
                 expected_return_date: new Date()
-            });
-        }).rejects.toBeInstanceOf(AppError);
+            })
+        ).rejects.toBeInstanceOf(AppError);
     });
 
 });

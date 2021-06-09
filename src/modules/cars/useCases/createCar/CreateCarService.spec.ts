@@ -28,19 +28,20 @@ describe("Create Car", () => {
     });
 
     it("should not be able to create a car with existent license plate", async () => {
-        await expect(async () => {
-            const car = {
-                name: "Name Car",
-                description: "Description Car",
-                daily_rate: 100,
-                license_plate: "ABC-1234",
-                fine_amount: 60,
-                brand: "Brand",
-                category_id: "category"
-            };
-            await createCarService.execute(car);
-            await createCarService.execute(car);
-        }).rejects.toBeInstanceOf(AppError);
+        const car = {
+            name: "Name Car",
+            description: "Description Car",
+            daily_rate: 100,
+            license_plate: "ABC-1234",
+            fine_amount: 60,
+            brand: "Brand",
+            category_id: "category"
+        };
+        await createCarService.execute(car);
+
+        await expect(
+            createCarService.execute(car)
+        ).rejects.toBeInstanceOf(AppError);
     });
 
     it("should not be able to create a car without avaiability", async () => {

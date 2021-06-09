@@ -16,6 +16,11 @@
                 ],
                 "summary": "Create a new category",
                 "description": "Categories reffers to different type of cars available for rental.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -73,6 +78,48 @@
                         }
                     }
                 }
+            }
+        },
+        "/sessions":{
+            "post":{
+                "tags":["Session"],
+                "summary":"Authenticate user",
+                "description":"Authenticate user",
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type":"string"
+                                    },
+                                    "password":{
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "response": {
+                    "200": {
+                        "description":"Success"
+                    },
+                    "400": {
+                        "description":"Email or password incorret"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {},
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
         }
     }

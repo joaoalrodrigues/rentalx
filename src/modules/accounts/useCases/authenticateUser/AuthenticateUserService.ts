@@ -3,6 +3,8 @@ import { compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import { IUsersRepository } from "@modules/accounts/repositories/IUsersRepository";
 import { AppError } from "@shared/errors/appError";
+import { IUsersTokenRepository } from "@modules/accounts/repositories/IUsersTokenRepository";
+import auth from "@config/auth";
 
 interface IRequest {
     email: string;
@@ -15,6 +17,7 @@ interface IResponse {
         email: string;
     };
     token: string;
+    refresh_token: string;
 }
 
 @injectable()
@@ -22,11 +25,21 @@ class AuthenticateUserService {
 
     constructor(
         @inject("UsersRepository")
-        private usersRepository: IUsersRepository
+        private usersRepository: IUsersRepository,
+        @inject("UsersTokenRepository")
+        private usersTokenRepository: IUsersTokenRepository,
+        @inject("DateProvider")
+        private dateProvider: IDateProvider
     ) { }
 
     async execute({ email, password }: IRequest): Promise<IResponse> {
         const user = await this.usersRepository.findByEmail(email);
+        const {
+            secret_token,
+            secret_refresh_token,
+            expires_in_token,
+            expires_in_refresh_token,
+            refresh_token_expire_days } = auth;
 
         if (!user) {
             throw new AppError("Email or password is incorrect!");
@@ -38,17 +51,31 @@ class AuthenticateUserService {
             throw new AppError("Email or password is incorrect!");
         }
 
-        const token = sign({}, "b3a8a6f3883b04647a727404f9b2a842", {
+        const token = sign({}, secret_token, {
             subject: user.id,
-            expiresIn: "1d"
+            expiresIn: expires_in_token
         });
 
-        const tokenReturn = {
+        const refresh_token = sign({ email }, secret_refresh_token, {
+            subject: user.id,
+            expiresIn: expires_in_refresh_token
+        });
+
+        const expires_date = this.dateProvider.addDays(refresh_token_expire_days);
+
+        await this.usersTokenRepository.create({
+            user_id: user.id,
+            refresh_token,
+            expires_date
+        });
+
+        const tokenReturn: IResponse = {
             user: {
                 name: user.name,
                 email: user.email,
             },
-            token
+            token,
+            refresh_token
         };
 
         return tokenReturn;
