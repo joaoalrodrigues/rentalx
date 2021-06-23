@@ -4,7 +4,7 @@ import { UsersRepositoryInMemory } from "@modules/accounts/repositories/in-memor
 import { CreateUserService } from "../createUser/CreateUserService";
 import { IUsersRepository } from "@modules/accounts/repositories/IUsersRepository";
 import { IUsersTokenRepository } from "@modules/accounts/repositories/IUsersTokenRepository";
-import { DayjsDateProvider } from "@shared/container/providers/DateProvider/DayjsDateProvider";
+import { DayjsDateProvider } from "@shared/container/providers/DateProvider/implementations/DayjsDateProvider";
 import { UsersTokenRepositoryInMemory } from "@modules/accounts/repositories/in-memory/UsersTokenRepositoryInMemory";
 import { SendForgotPasswordMailService } from "./SendForgotPasswordMailService";
 import { IMailProvider } from "@shared/container/providers/MailProvider/IMailProvider";

@@ -2,5 +2,9 @@
 .vscode/
 node_modules/
 build/
-tmp/
+tmp/*
 temp/
+.env
+!tmp/.gitkeep
+dist/
+ormconfig.json
